@@ -9,6 +9,9 @@ set -x
 umount -f /Volumes/Src
 umount -f /Volumes/Dst
 rm -f {Src,Dst}.sparseimage
+sudo rm -rf /tmp/duplicacy-bbouncer{,-test-pref-dir-{src,dst}} 
+mkdir -p /tmp/duplicacy-bbouncer{,-test-pref-dir-{src,dst}} 
+chmod 777 /tmp/duplicacy-bbouncer{,-test-pref-dir-{src,dst}} 
 
 # create BB volumes
 ./bbouncer create-vol Src
@@ -23,13 +26,13 @@ duplicacy backup
 
 cd /Volumes/Dst
 duplicacy init -pref-dir /tmp/duplicacy-bbouncer-test-pref-dir-dst duplicacy-bbouncer /tmp/duplicacy-bbouncer-test
-duplicacy restore -r 1 -overwrite
+sudo duplicacy restore -r 1 -overwrite
 
 cd "$BB_DIR"
-./bbouncer verify -d /Volumes/{Src,Dst}
+./bbouncer verify -d /Volumes/{Src,Dst} 2>/dev/null
 
 # cleanup volumes
 umount -f /Volumes/Src
 umount -f /Volumes/Dst
 rm -f {Src,Dst}.sparseimage
-rm -rf /tmp/duplicacy-bbouncer-test /tmp/duplicacy-bbouncer-test-pref-dir-{src,dst}
+rm -rf /tmp/duplicacy-bbouncer-test{,-pref-dir-{src,dst}}
